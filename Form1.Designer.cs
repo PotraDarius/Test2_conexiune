@@ -38,6 +38,8 @@ namespace Test2_conexiune
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -120,6 +122,30 @@ namespace Test2_conexiune
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // button7
+            // 
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Location = new System.Drawing.Point(435, 482);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(168, 66);
+            this.button7.TabIndex = 7;
+            this.button7.Text = "Modificare articol";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Visible = false;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button8
+            // 
+            this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button8.Location = new System.Drawing.Point(747, 493);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(178, 66);
+            this.button8.TabIndex = 8;
+            this.button8.Text = "Adaugare/Stergere articol";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Visible = false;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -127,6 +153,8 @@ namespace Test2_conexiune
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1258, 546);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -152,6 +180,8 @@ namespace Test2_conexiune
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
     }
 }
 

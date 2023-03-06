@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Test2_conexiune
 {
@@ -36,9 +37,18 @@ namespace Test2_conexiune
 
             button6.Left = this.Width / 2;
             button6.Top = this.Height / 2 + this.Height / 4 + 100;
+
+            this.button7.Visible = false;
+            button7.Left = this.Width / 2;
+            button7.Top = this.Height / 2 + this.Height / 4 + 200;
+
+            this.button8.Visible = false;
+            button8.Left = this.Width / 2 + 323;
+            button8.Top = this.Height / 2 + this.Height / 4 + 200;
         }
 
         bool logare_ok = false;
+        bool logare_admin = true;
         public static DialogResult InputBox(string title, string promptText, ref string value)
         {
             Form form = new Form();
@@ -83,15 +93,6 @@ namespace Test2_conexiune
 
         private void button1_Click(object sender, EventArgs e)
         {
-            /*string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string path = (System.IO.Path.GetFullPath(executable));
-            path = path.Replace("\\Test2_conexiune.exe", "");
-            AppDomain.CurrentDomain.SetData("DataDirectory", path);
-            //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
-            OleDbConnection con = new OleDbConnection(connection);
-            con.Open();
-            MessageBox.Show("Conexiune reusita");*/
             Application.Exit();
         }
 
@@ -139,8 +140,18 @@ namespace Test2_conexiune
                 }
                 if (ok == true)
                 {
-                    logare_ok = true;
-                    MessageBox.Show("Logare reusita!");
+                    if (username == "admin")
+                    {
+                        logare_admin = true;
+                        MessageBox.Show("Logare de admin reusita!");
+                        this.button7.Visible = true;
+                        this.button8.Visible = true;
+                    }
+                    else
+                    {
+                        logare_ok = true;
+                        MessageBox.Show("Logare reusita!");
+                    }
                 }
                 else MessageBox.Show("Nu exista un cont cu acest username!");
             }
@@ -175,9 +186,9 @@ namespace Test2_conexiune
 
                 if (reader.GetString(0) == titlu)
                 {
-                    if (reader.GetInt32(1) > 0)
+                    if (reader.GetInt16(1) > 0)
                     {
-                        output += reader.GetInt32(1);
+                        output += reader.GetInt16(1);
                     }
                 }
 
@@ -193,7 +204,17 @@ namespace Test2_conexiune
 
         private void button5_Click(object sender, EventArgs e)
         {
-
+            if (logare_ok == true || logare_admin == true)
+            {
+                logare_ok = false;
+                logare_admin = false;
+                MessageBox.Show("Delogare reusita!");
+                if(this.button7.Visible == true)
+                    this.button7.Visible = false;
+                if(this.button8.Visible == true)
+                    this.button8.Visible = false;
+            }
+            else MessageBox.Show("Sunteti deja delogat!");
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -227,12 +248,202 @@ namespace Test2_conexiune
                 MessageBox.Show("Cumparare Reusita");
             }
             else
-                MessageBox.Show("Trebuie sa va logati pentru a cumpara un articol!");
+                MessageBox.Show("Trebuie sa va logati cu cont de utilizator pentru a cumpara un articol!");
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
+            if (logare_ok == false)
+            {
+                string username = "";
+                string parola = "";
+                string value = "";
 
+                string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string path = (System.IO.Path.GetFullPath(executable));
+                path = path.Replace("\\Test2_conexiune.exe", "");
+                AppDomain.CurrentDomain.SetData("DataDirectory", path);
+                //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
+                string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+
+                OleDbConnection con = new OleDbConnection(connection);
+                con.Open();
+                bool ok = true;
+                do
+                {
+                    ok = true;
+                    if (InputBox("Creare Cont", "Introduceti username-ul dorit:", ref value) == DialogResult.OK)
+                        username = value;
+
+                    string Query = "SELECT Users.Username FROM Users";
+                    OleDbCommand comd = new OleDbCommand(Query, con);
+                    OleDbDataReader reader = comd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        if (reader.GetString(0) == username)
+                            ok = false;
+                    }
+                    if (ok == false)
+                    {
+                        MessageBox.Show("Exista un cont cu acest username!");
+                        value = "";
+                    }
+
+                } while (ok == false);
+
+                value = "";
+
+                if (InputBox("Creare Cont", "Introduceti parola dorita:", ref value) == DialogResult.OK)
+                    parola = value;
+
+
+
+                string query = "INSERT INTO Users(Username,Parola) VALUES (@u, @p)";
+
+
+                OleDbDataAdapter cont = new OleDbDataAdapter();
+                OleDbCommand cmd = new OleDbCommand(query, con);
+
+                cmd.Parameters.AddWithValue("@u", username);
+                cmd.Parameters.AddWithValue("@p", parola);
+
+                cont.InsertCommand = cmd;
+
+                cont.InsertCommand.ExecuteNonQuery();
+
+                con.Close();
+
+                MessageBox.Show("Contul s-a creat!");
+                logare_ok = true;
+
+
+            }
+            else MessageBox.Show("Nu puteti crea un cont daca sunteti logat cu alt cont!");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            string id = " ";
+            string val = "";
+            if (InputBox("Modificare articol", "Introduceti ID-ul articoluli dorit:", ref val) == DialogResult.OK)
+                id = val;
+            val = "";
+            string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string path = (System.IO.Path.GetFullPath(executable));
+            path = path.Replace("\\Test2_conexiune.exe", "");
+            AppDomain.CurrentDomain.SetData("DataDirectory", path);
+            //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
+            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+            
+            OleDbConnection con = new OleDbConnection(connection);
+            con.Open();
+            string query = "SELECT * FROM INVENTAR";
+
+            OleDbCommand cmd = new OleDbCommand(query, con);
+            OleDbDataReader reader = cmd.ExecuteReader();
+
+            bool ok = false;
+
+            while (reader.Read())
+            {
+                if (reader.GetInt32(0) == Convert.ToInt32(id))
+                {
+                    ok = true;
+                    string col = "";
+                    string new_val = "";
+                    if (InputBox("Modificare articol", "Ce doriti sa modificati la acest articol?", ref val) == DialogResult.OK)
+                        col = val;
+                    val = "";
+                    if (InputBox("Modificare articol", "Introduceti noua valoare:", ref val) == DialogResult.OK)
+                        new_val = val;
+                    string Query = "UPDATE Inventar SET "+ col +" = '"+ new_val +"' WHERE Inventar.ID = "+ id +" ";
+                    OleDbCommand cmd1 = new OleDbCommand();
+                    OleDbDataAdapter mod = new OleDbDataAdapter();
+
+                    cmd1.CommandText = Query;
+                    cmd1.Connection = con;
+
+
+                    MessageBox.Show(cmd1.CommandText);
+                    mod.UpdateCommand = cmd1;
+                    mod.UpdateCommand.ExecuteNonQuery();
+                    MessageBox.Show("Modificare reusita!");
+                }
+                
+            }
+            if (ok == false)
+                MessageBox.Show("Nu exista articol cu acest ID!");
+            con.Close();
+
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            string opt = "";
+            string val = "";
+            if (InputBox("Modificare inventar", "Pentru adugare articol tastati 1. Pentru stergere articol tastati 2:", ref val) == DialogResult.OK)
+                opt = val;
+            val = "";
+
+            string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string path = (System.IO.Path.GetFullPath(executable));
+            path = path.Replace("\\Test2_conexiune.exe", "");
+            AppDomain.CurrentDomain.SetData("DataDirectory", path);
+            //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
+            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+
+            OleDbConnection con = new OleDbConnection(connection);
+            con.Open();
+
+
+            if (opt == "1")
+            {
+                string artist = "";
+                string titlu = "";
+                string genmuzical = "";
+                string anlansare = "";
+                string nrbucati = "";
+
+                if (InputBox("Adaugare articol", "Dati artistul articolului:", ref val) == DialogResult.OK)
+                    artist = val;
+                val = "";
+
+                if (InputBox("Adaugare articol", "Dati titlul articolului:", ref val) == DialogResult.OK)
+                    titlu = val;
+                val = "";
+
+                if (InputBox("Adaugare articol", "Dati genul muzical al articolului:", ref val) == DialogResult.OK)
+                    genmuzical = val;
+                val = "";
+
+                if (InputBox("Adaugare articol", "Dati anul de lansare al articolului:", ref val) == DialogResult.OK)
+                    anlansare = val;
+                val = "";
+
+                if (InputBox("Adaugare articol", "Dati numarul de bucati al articolului:", ref val) == DialogResult.OK)
+                    nrbucati = val;
+                val = "";
+                string query = "INSERT INTO Inventar(Artist,Titlu,GenMuzical,AnLansare,NrBucati) VALUES('"+ artist +"', '" + titlu +"', '"+ genmuzical +"', '"+anlansare+"', '"+ nrbucati +"')";
+                OleDbCommand cmd = new OleDbCommand(query, con);
+                OleDbDataAdapter adaug = new OleDbDataAdapter();
+                adaug.InsertCommand = cmd;
+                adaug.InsertCommand.ExecuteNonQuery();
+                MessageBox.Show("Adaugare efectuata!");
+            }
+            else if(opt == "2")
+            {
+                string id = "";
+                if (InputBox("Stergere articol", "Dati ID ul articolului dorit:", ref val) == DialogResult.OK)
+                    id = val;
+                string query = "DELETE FROM Inventar WHERE Inventar.ID = "+ id +"";
+                OleDbCommand cmd = new OleDbCommand(query,con);
+                OleDbDataAdapter del = new OleDbDataAdapter();
+                del.DeleteCommand = cmd;
+                del.DeleteCommand.ExecuteNonQuery();
+                MessageBox.Show("Stergere efectuata!");
+            }
+
+            con.Close();
         }
     }
 }
