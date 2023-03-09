@@ -118,7 +118,7 @@ namespace Test2_conexiune
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(168, 66);
             this.button6.TabIndex = 6;
-            this.button6.Text = "Creare cont";
+            this.button6.Text = "Creare/Stergere cont";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
@@ -152,7 +152,7 @@ namespace Test2_conexiune
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(1258, 546);
+            this.ClientSize = new System.Drawing.Size(1258, 643);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);

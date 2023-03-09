@@ -48,7 +48,8 @@ namespace Test2_conexiune
         }
 
         bool logare_ok = false;
-        bool logare_admin = true;
+        bool logare_admin = false;
+        string utilizator;
         public static DialogResult InputBox(string title, string promptText, ref string value)
         {
             Form form = new Form();
@@ -99,63 +100,70 @@ namespace Test2_conexiune
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (logare_ok == false)
-            {
-                string username = " ";
-                string var = "";
-                if (InputBox("Logare", "Introduceti username-ul:", ref var) == DialogResult.OK)
-                    username = var;
 
-                string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string path = (System.IO.Path.GetFullPath(executable));
-                path = path.Replace("\\Test2_conexiune.exe", "");
-                AppDomain.CurrentDomain.SetData("DataDirectory", path);
-                //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-                string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
-                
-
-                OleDbConnection con = new OleDbConnection(connection);
-                string query = "SELECT * FROM Users";
-                con.Open();
-                OleDbCommand cmd = new OleDbCommand();
-                cmd.Connection = con;
-                cmd.CommandText = query;
-                OleDbDataReader reader = cmd.ExecuteReader();
-                bool ok = false;
-                while (reader.Read())
+                if (logare_ok == false && logare_admin == false)
                 {
-                    if (reader.GetString(1) == username)
+                    string username = " ";
+                    string var = "";
+                    if (InputBox("Logare", "Introduceti username-ul:", ref var) == DialogResult.OK)
+                        username = var;
+
+                    string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    string path = (System.IO.Path.GetFullPath(executable));
+                    path = path.Replace("\\Test2_conexiune.exe", "");
+                    AppDomain.CurrentDomain.SetData("DataDirectory", path);
+                    //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
+                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+
+
+                    OleDbConnection con = new OleDbConnection(connection);
+                    string query = "SELECT * FROM Users";
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.Connection = con;
+                    cmd.CommandText = query;
+                    OleDbDataReader reader = cmd.ExecuteReader();
+                    bool ok = false;
+                    while (reader.Read())
                     {
-                        do
+                        if (reader.GetString(1) == username)
                         {
-                            string parola = "";
-                            string val = "";
-                            if (InputBox("Logare", "Introduceti parola:", ref val) == DialogResult.OK)
-                                parola = val;
-                            if (parola == reader.GetString(2))
-                                ok = true;
-                            else MessageBox.Show("Parola gresita!");
-                        } while (ok == false);
+                            do
+                            {
+                                string parola = "";
+                                string val = "";
+                                if (InputBox("Logare", "Introduceti parola:", ref val) == DialogResult.OK)
+                                    parola = val;
+                                if (parola == reader.GetString(2))
+                                {
+                                    utilizator = username;
+                                    ok = true;
+                                }
+                                else MessageBox.Show("Parola gresita!");
+                            } while (ok == false);
+                        }
                     }
-                }
-                if (ok == true)
-                {
-                    if (username == "admin")
+                    if (ok == true)
                     {
-                        logare_admin = true;
-                        MessageBox.Show("Logare de admin reusita!");
-                        this.button7.Visible = true;
-                        this.button8.Visible = true;
+                        if (username == "admin")
+                        {
+                            logare_admin = true;
+                            MessageBox.Show("Logare de admin reusita!");
+                            this.button7.Visible = true;
+                            this.button8.Visible = true;
+                        }
+                        else
+                        {
+                            logare_ok = true;
+                            MessageBox.Show("Logare reusita!");
+                        }
                     }
-                    else
-                    {
-                        logare_ok = true;
-                        MessageBox.Show("Logare reusita!");
-                    }
+                    else MessageBox.Show("Nu exista un cont cu acest username!");
                 }
-                else MessageBox.Show("Nu exista un cont cu acest username!");
-            }
-            else MessageBox.Show("Sunteti deja autentificat!");
+                else MessageBox.Show("Sunteti deja autentificat!");
+            
+            
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -253,72 +261,149 @@ namespace Test2_conexiune
 
         private void button6_Click(object sender, EventArgs e)
         {
-            if (logare_ok == false)
+            string opt = " ";
+            string value = "";
+            if (InputBox("Creare/Stergere Cont ", "Pentru creare cont tastati 1. Pentru stergere cont tastati 2:", ref value) == DialogResult.OK)
+                opt = value;
+            if (opt == "1")
             {
-                string username = "";
-                string parola = "";
-                string value = "";
-
-                string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string path = (System.IO.Path.GetFullPath(executable));
-                path = path.Replace("\\Test2_conexiune.exe", "");
-                AppDomain.CurrentDomain.SetData("DataDirectory", path);
-                //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-                string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
-
-                OleDbConnection con = new OleDbConnection(connection);
-                con.Open();
-                bool ok = true;
-                do
+                if (logare_ok == false)
                 {
-                    ok = true;
-                    if (InputBox("Creare Cont", "Introduceti username-ul dorit:", ref value) == DialogResult.OK)
-                        username = value;
+                    string username = "";
+                    string parola = "";
+                    value = "";
 
-                    string Query = "SELECT Users.Username FROM Users";
-                    OleDbCommand comd = new OleDbCommand(Query, con);
-                    OleDbDataReader reader = comd.ExecuteReader();
-                    while (reader.Read())
+                    string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    string path = (System.IO.Path.GetFullPath(executable));
+                    path = path.Replace("\\Test2_conexiune.exe", "");
+                    AppDomain.CurrentDomain.SetData("DataDirectory", path);
+                    //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
+                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+
+                    OleDbConnection con = new OleDbConnection(connection);
+                    con.Open();
+                    bool ok = true;
+                    do
                     {
-                        if (reader.GetString(0) == username)
-                            ok = false;
-                    }
-                    if (ok == false)
-                    {
-                        MessageBox.Show("Exista un cont cu acest username!");
-                        value = "";
-                    }
+                        ok = true;
+                        if (InputBox("Creare Cont", "Introduceti username-ul dorit:", ref value) == DialogResult.OK)
+                            username = value;
 
-                } while (ok == false);
+                        string Query = "SELECT Users.Username FROM Users";
+                        OleDbCommand comd = new OleDbCommand(Query, con);
+                        OleDbDataReader reader = comd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            if (reader.GetString(0) == username)
+                                ok = false;
+                        }
+                        if (ok == false)
+                        {
+                            MessageBox.Show("Exista un cont cu acest username!");
+                            value = "";
+                        }
 
-                value = "";
+                    } while (ok == false);
 
-                if (InputBox("Creare Cont", "Introduceti parola dorita:", ref value) == DialogResult.OK)
-                    parola = value;
+                    value = "";
 
-
-
-                string query = "INSERT INTO Users(Username,Parola) VALUES (@u, @p)";
-
-
-                OleDbDataAdapter cont = new OleDbDataAdapter();
-                OleDbCommand cmd = new OleDbCommand(query, con);
-
-                cmd.Parameters.AddWithValue("@u", username);
-                cmd.Parameters.AddWithValue("@p", parola);
-
-                cont.InsertCommand = cmd;
-
-                cont.InsertCommand.ExecuteNonQuery();
-
-                con.Close();
-
-                MessageBox.Show("Contul s-a creat!");
-                logare_ok = true;
+                    if (InputBox("Creare Cont", "Introduceti parola dorita:", ref value) == DialogResult.OK)
+                        parola = value;
 
 
+
+                    string query = "INSERT INTO Users(Username,Parola) VALUES (@u, @p)";
+
+
+                    OleDbDataAdapter cont = new OleDbDataAdapter();
+                    OleDbCommand cmd = new OleDbCommand(query, con);
+
+                    cmd.Parameters.AddWithValue("@u", username);
+                    cmd.Parameters.AddWithValue("@p", parola);
+
+                    cont.InsertCommand = cmd;
+
+                    cont.InsertCommand.ExecuteNonQuery();
+
+                    con.Close();
+
+                    MessageBox.Show("Contul s-a creat!");
+                    logare_ok = true;
+                    utilizator = username;
+
+
+                }
+                else MessageBox.Show("Nu puteti crea un cont daca sunteti logat cu alt cont!");
             }
-            else MessageBox.Show("Nu puteti crea un cont daca sunteti logat cu alt cont!");
+            else if (opt == "2")
+            {
+                if (logare_admin == false)
+                {
+
+                    if (logare_ok == false)
+                        MessageBox.Show("Trebuie sa va logati pentru a sterge un cont!");
+                    else if (logare_ok == true)
+                    {
+                        MessageBoxButtons buton = MessageBoxButtons.YesNo;
+                        DialogResult result;
+                        result = MessageBox.Show("Sunteti sigur ca doriti sa va stergeti contul?", "Stergere cont", buton);
+                        if (result == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                            string path = (System.IO.Path.GetFullPath(executable));
+                            path = path.Replace("\\Test2_conexiune.exe", "");
+                            AppDomain.CurrentDomain.SetData("DataDirectory", path);
+                            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+
+                            string query = "DELETE FROM Users WHERE Username = '" + utilizator + "'";
+
+                            OleDbConnection con = new OleDbConnection(connection);
+                            OleDbCommand cmd = new OleDbCommand();
+                            con.Open();
+                            cmd.CommandText = query;
+                            cmd.Connection = con;
+                            OleDbDataAdapter sterg = new OleDbDataAdapter();
+                            sterg.DeleteCommand = cmd;
+                            sterg.DeleteCommand.ExecuteNonQuery();
+                            con.Close();
+                            MessageBox.Show("Cont sters!");
+                            logare_ok= false;
+                            utilizator = "";
+                        }
+                    }
+                }
+                else if (logare_admin == true)
+                {
+                    string id = "";
+                    value = "";
+                    if (InputBox("Stergere cont", "Dati id-ul contului dorit:", ref value) == DialogResult.OK)
+                    {
+                        id = value;
+                    }
+
+                    string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    string path = (System.IO.Path.GetFullPath(executable));
+                    path = path.Replace("\\Test2_conexiune.exe", "");
+                    AppDomain.CurrentDomain.SetData("DataDirectory", path);
+                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+
+                    string query = "DELETE FROM Users WHERE ID = " + id + "";
+
+                    OleDbConnection con = new OleDbConnection(connection);
+                    OleDbCommand cmd = new OleDbCommand();
+                    con.Open();
+                    cmd.CommandText = query;
+                    cmd.Connection = con;
+                    OleDbDataAdapter sterg = new OleDbDataAdapter();
+                    sterg.DeleteCommand = cmd;
+                    sterg.DeleteCommand.ExecuteNonQuery();
+                    con.Close();
+                    MessageBox.Show("Cont sters!");
+
+
+
+                }
+            }
         }
 
         private void button7_Click(object sender, EventArgs e)
