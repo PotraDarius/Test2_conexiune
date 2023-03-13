@@ -45,6 +45,9 @@ namespace Test2_conexiune
             this.button8.Visible = false;
             button8.Left = this.Width / 2 + 323;
             button8.Top = this.Height / 2 + this.Height / 4 + 200;
+
+            button9.Top = this.Height / 4 +20;
+            button9.Left = this.Width / 2 + 623;
         }
 
         bool logare_ok = false;
@@ -492,10 +495,32 @@ namespace Test2_conexiune
                 if (InputBox("Adaugare articol", "Dati artistul articolului:", ref val) == DialogResult.OK)
                     artist = val;
                 val = "";
+                
+                
+                bool ok = false;
+                do
+                {
+                    ok = false;
+                    titlu = "";
+                    if (InputBox("Adaugare articol", "Dati titlul articolului:", ref val) == DialogResult.OK)
+                        titlu = val;
+                    val = "";
 
-                if (InputBox("Adaugare articol", "Dati titlul articolului:", ref val) == DialogResult.OK)
-                    titlu = val;
-                val = "";
+                    string q = "SELECT Titlu FROM Inventar";
+                    OleDbCommand comd = new OleDbCommand(q, con);
+                    OleDbDataReader read = comd.ExecuteReader();
+                    while (read.Read())
+                    {
+                        if (read.GetString(0) == titlu)
+                            ok = true;
+                    }
+                    if (ok == true)
+                        MessageBox.Show("Exista deja acest album!");
+                } while (ok == true);
+
+
+
+
 
                 if (InputBox("Adaugare articol", "Dati genul muzical al articolului:", ref val) == DialogResult.OK)
                     genmuzical = val;
@@ -529,6 +554,31 @@ namespace Test2_conexiune
             }
 
             con.Close();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string path = (System.IO.Path.GetFullPath(executable));
+            path = path.Replace("\\Test2_conexiune.exe", "");
+            AppDomain.CurrentDomain.SetData("DataDirectory", path);
+            //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
+            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+
+            OleDbConnection con = new OleDbConnection(connection);
+            con.Open();
+
+            string query = "SELECT * FROM Inventar";
+
+            OleDbCommand cmd = new OleDbCommand(query,con);
+            OleDbDataReader reader = cmd.ExecuteReader();
+
+            string afis = "ID     Artist    Titlu   Gen Muzical   An Lansare    Nr Bucati \n\n";
+            while (reader.Read())
+            { 
+                afis += " "+Convert.ToString(reader.GetInt32(0)) +"   " + reader.GetString(1) + "   " + reader.GetString(2) + "   " + reader.GetString(3) + "    " + Convert.ToString(reader.GetInt16(4)) + "    " + Convert.ToString(reader.GetInt16(5)) + "\n \n";
+            }
+            MessageBox.Show(afis);
         }
     }
 }
