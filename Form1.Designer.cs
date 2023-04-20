@@ -41,6 +41,7 @@ namespace Test2_conexiune
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // button1
@@ -64,9 +65,9 @@ namespace Test2_conexiune
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(424, 41);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(491, 63);
+            this.label1.Size = new System.Drawing.Size(509, 63);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Magazin de vinyluri";
+            this.label1.Text = "Magazin de viny-luri";
             // 
             // button2
             // 
@@ -75,7 +76,7 @@ namespace Test2_conexiune
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(168, 66);
             this.button2.TabIndex = 2;
-            this.button2.Text = "Logare";
+            this.button2.Text = "Logare in cont";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -196,6 +197,7 @@ namespace Test2_conexiune
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

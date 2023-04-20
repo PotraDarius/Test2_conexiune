@@ -14,6 +14,8 @@ namespace Test2_conexiune
 {
     public partial class Form1 : Form
     {
+        bool logare_ok = false;
+        bool logare_admin = false;
         public Form1()
         {
             InitializeComponent();
@@ -48,12 +50,14 @@ namespace Test2_conexiune
 
             button9.Top = this.Height / 4 +20;
             button9.Left = this.Width / 2 + 623;
+
+            logare_ok = false;
+            logare_admin = false;
         }
 
-        bool logare_ok = false;
-        bool logare_admin = false;
+        
         string utilizator;
-        public static DialogResult InputBox(string title, string promptText, ref string value)
+        public static DialogResult InputBox(string title, string promptText, ref string value,int opt)
         {
             Form form = new Form();
             Label label = new Label();
@@ -63,8 +67,10 @@ namespace Test2_conexiune
 
             form.Text = title;
             label.Text = promptText;
+            if(opt == 1)
+                textBox.PasswordChar= '*';
             textBox.Text = value;
-
+            
             buttonOk.Text = "OK";
             buttonCancel.Text = "Cancel";
             buttonOk.DialogResult = DialogResult.OK;
@@ -108,15 +114,12 @@ namespace Test2_conexiune
                 {
                     string username = " ";
                     string var = "";
-                    if (InputBox("Logare", "Introduceti username-ul:", ref var) == DialogResult.OK)
+                    if (InputBox("Logare", "Introduceti username-ul:", ref var,0) == DialogResult.OK)
                         username = var;
 
                     string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                    string path = (System.IO.Path.GetFullPath(executable));
-                    path = path.Replace("\\Test2_conexiune.exe", "");
-                    AppDomain.CurrentDomain.SetData("DataDirectory", path);
-                    //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+                    executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
 
 
                     OleDbConnection con = new OleDbConnection(connection);
@@ -135,7 +138,7 @@ namespace Test2_conexiune
                             {
                                 string parola = "";
                                 string val = "";
-                                if (InputBox("Logare", "Introduceti parola:", ref val) == DialogResult.OK)
+                                if (InputBox("Logare", "Introduceti parola:", ref val,1) == DialogResult.OK)
                                     parola = val;
                                 if (parola == reader.GetString(2))
                                 {
@@ -173,16 +176,12 @@ namespace Test2_conexiune
         {
             string titlu = "";
             string value = " ";
-            if (InputBox("Titlu album", "Dati un Titlu de album pentru a verifica", ref value) == DialogResult.OK)
+            if (InputBox("Titlu album", "Dati un Titlu de album pentru a verifica", ref value,0) == DialogResult.OK)
                 titlu = value;
 
             string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string path = (System.IO.Path.GetFullPath(executable));
-            path = path.Replace("\\Test2_conexiune.exe", "");
-            AppDomain.CurrentDomain.SetData("DataDirectory", path);
-            //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
-
+            executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
 
             String query = "SELECT Inventar.Titlu , Inventar.NrBucati FROM Inventar";
             OleDbConnection con = new OleDbConnection(connection);
@@ -234,15 +233,12 @@ namespace Test2_conexiune
             {
                 string titlu = "";
                 string value = " ";
-                if (InputBox("Titlu album", "Dati un Titlu de album pentru a cumpara", ref value) == DialogResult.OK)
+                if (InputBox("Titlu album", "Dati un Titlu de album pentru a cumpara", ref value, 0) == DialogResult.OK)
                     titlu = value;
 
                 string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string path = (System.IO.Path.GetFullPath(executable));
-                path = path.Replace("\\Test2_conexiune.exe", "");
-                AppDomain.CurrentDomain.SetData("DataDirectory", path);
-                //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-                string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+                executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+                string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
 
 
                 String query = "UPDATE Inventar Set NrBucati = NrBucati -1 WHERE Titlu = @t ";
@@ -266,7 +262,7 @@ namespace Test2_conexiune
         {
             string opt = " ";
             string value = "";
-            if (InputBox("Creare/Stergere Cont ", "Pentru creare cont tastati 1. Pentru stergere cont tastati 2:", ref value) == DialogResult.OK)
+            if (InputBox("Creare/Stergere Cont ", "Pentru creare cont tastati 1. Pentru stergere cont tastati 2:", ref value, 0) == DialogResult.OK)
                 opt = value;
             if (opt == "1")
             {
@@ -277,11 +273,8 @@ namespace Test2_conexiune
                     value = "";
 
                     string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                    string path = (System.IO.Path.GetFullPath(executable));
-                    path = path.Replace("\\Test2_conexiune.exe", "");
-                    AppDomain.CurrentDomain.SetData("DataDirectory", path);
-                    //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+                    executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
 
                     OleDbConnection con = new OleDbConnection(connection);
                     con.Open();
@@ -289,7 +282,7 @@ namespace Test2_conexiune
                     do
                     {
                         ok = true;
-                        if (InputBox("Creare Cont", "Introduceti username-ul dorit:", ref value) == DialogResult.OK)
+                        if (InputBox("Creare Cont", "Introduceti username-ul dorit:", ref value, 0) == DialogResult.OK)
                             username = value;
 
                         string Query = "SELECT Users.Username FROM Users";
@@ -310,7 +303,7 @@ namespace Test2_conexiune
 
                     value = "";
 
-                    if (InputBox("Creare Cont", "Introduceti parola dorita:", ref value) == DialogResult.OK)
+                    if (InputBox("Creare Cont", "Introduceti parola dorita:", ref value, 0) == DialogResult.OK)
                         parola = value;
 
 
@@ -353,10 +346,8 @@ namespace Test2_conexiune
                         if (result == System.Windows.Forms.DialogResult.Yes)
                         {
                             string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                            string path = (System.IO.Path.GetFullPath(executable));
-                            path = path.Replace("\\Test2_conexiune.exe", "");
-                            AppDomain.CurrentDomain.SetData("DataDirectory", path);
-                            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+                            executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+                            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
 
                             string query = "DELETE FROM Users WHERE Username = '" + utilizator + "'";
 
@@ -379,16 +370,14 @@ namespace Test2_conexiune
                 {
                     string id = "";
                     value = "";
-                    if (InputBox("Stergere cont", "Dati id-ul contului dorit:", ref value) == DialogResult.OK)
+                    if (InputBox("Stergere cont", "Dati id-ul contului dorit:", ref value, 0) == DialogResult.OK)
                     {
                         id = value;
                     }
 
                     string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                    string path = (System.IO.Path.GetFullPath(executable));
-                    path = path.Replace("\\Test2_conexiune.exe", "");
-                    AppDomain.CurrentDomain.SetData("DataDirectory", path);
-                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+                    executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+                    string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
 
                     string query = "DELETE FROM Users WHERE ID = " + id + "";
 
@@ -413,16 +402,14 @@ namespace Test2_conexiune
         {
             string id = " ";
             string val = "";
-            if (InputBox("Modificare articol", "Introduceti ID-ul articoluli dorit:", ref val) == DialogResult.OK)
+            if (InputBox("Modificare articol", "Introduceti ID-ul articoluli dorit:", ref val, 0) == DialogResult.OK)
                 id = val;
             val = "";
+
             string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string path = (System.IO.Path.GetFullPath(executable));
-            path = path.Replace("\\Test2_conexiune.exe", "");
-            AppDomain.CurrentDomain.SetData("DataDirectory", path);
-            //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
-            
+            executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
+
             OleDbConnection con = new OleDbConnection(connection);
             con.Open();
             string query = "SELECT * FROM INVENTAR";
@@ -439,10 +426,10 @@ namespace Test2_conexiune
                     ok = true;
                     string col = "";
                     string new_val = "";
-                    if (InputBox("Modificare articol", "Ce doriti sa modificati la acest articol?", ref val) == DialogResult.OK)
+                    if (InputBox("Modificare articol", "Ce doriti sa modificati la acest articol?", ref val, 0) == DialogResult.OK)
                         col = val;
                     val = "";
-                    if (InputBox("Modificare articol", "Introduceti noua valoare:", ref val) == DialogResult.OK)
+                    if (InputBox("Modificare articol", "Introduceti noua valoare:", ref val, 0) == DialogResult.OK)
                         new_val = val;
                     string Query = "UPDATE Inventar SET "+ col +" = '"+ new_val +"' WHERE Inventar.ID = "+ id +" ";
                     OleDbCommand cmd1 = new OleDbCommand();
@@ -469,16 +456,13 @@ namespace Test2_conexiune
         {
             string opt = "";
             string val = "";
-            if (InputBox("Modificare inventar", "Pentru adugare articol tastati 1. Pentru stergere articol tastati 2:", ref val) == DialogResult.OK)
+            if (InputBox("Modificare inventar", "Pentru adugare articol tastati 1. Pentru stergere articol tastati 2:", ref val, 0) == DialogResult.OK)
                 opt = val;
             val = "";
 
             string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string path = (System.IO.Path.GetFullPath(executable));
-            path = path.Replace("\\Test2_conexiune.exe", "");
-            AppDomain.CurrentDomain.SetData("DataDirectory", path);
-            //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+            executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
 
             OleDbConnection con = new OleDbConnection(connection);
             con.Open();
@@ -492,7 +476,7 @@ namespace Test2_conexiune
                 string anlansare = "";
                 string nrbucati = "";
 
-                if (InputBox("Adaugare articol", "Dati artistul articolului:", ref val) == DialogResult.OK)
+                if (InputBox("Adaugare articol", "Dati artistul articolului:", ref val, 0) == DialogResult.OK)
                     artist = val;
                 val = "";
                 
@@ -502,7 +486,7 @@ namespace Test2_conexiune
                 {
                     ok = false;
                     titlu = "";
-                    if (InputBox("Adaugare articol", "Dati titlul articolului:", ref val) == DialogResult.OK)
+                    if (InputBox("Adaugare articol", "Dati titlul articolului:", ref val, 0) == DialogResult.OK)
                         titlu = val;
                     val = "";
 
@@ -522,15 +506,15 @@ namespace Test2_conexiune
 
 
 
-                if (InputBox("Adaugare articol", "Dati genul muzical al articolului:", ref val) == DialogResult.OK)
+                if (InputBox("Adaugare articol", "Dati genul muzical al articolului:", ref val  , 0) == DialogResult.OK)
                     genmuzical = val;
                 val = "";
 
-                if (InputBox("Adaugare articol", "Dati anul de lansare al articolului:", ref val) == DialogResult.OK)
+                if (InputBox("Adaugare articol", "Dati anul de lansare al articolului:", ref val, 0) == DialogResult.OK)
                     anlansare = val;
                 val = "";
 
-                if (InputBox("Adaugare articol", "Dati numarul de bucati al articolului:", ref val) == DialogResult.OK)
+                if (InputBox("Adaugare articol", "Dati numarul de bucati al articolului:", ref val, 0) == DialogResult.OK)
                     nrbucati = val;
                 val = "";
                 string query = "INSERT INTO Inventar(Artist,Titlu,GenMuzical,AnLansare,NrBucati) VALUES('"+ artist +"', '" + titlu +"', '"+ genmuzical +"', '"+anlansare+"', '"+ nrbucati +"')";
@@ -543,7 +527,7 @@ namespace Test2_conexiune
             else if(opt == "2")
             {
                 string id = "";
-                if (InputBox("Stergere articol", "Dati ID ul articolului dorit:", ref val) == DialogResult.OK)
+                if (InputBox("Stergere articol", "Dati ID ul articolului dorit:", ref val, 0) == DialogResult.OK)
                     id = val;
                 string query = "DELETE FROM Inventar WHERE Inventar.ID = "+ id +"";
                 OleDbCommand cmd = new OleDbCommand(query,con);
@@ -559,11 +543,8 @@ namespace Test2_conexiune
         private void button9_Click(object sender, EventArgs e)
         {
             string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string path = (System.IO.Path.GetFullPath(executable));
-            path = path.Replace("\\Test2_conexiune.exe", "");
-            AppDomain.CurrentDomain.SetData("DataDirectory", path);
-            //string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = |DataDirectory|\BazaDeDate.accdb;Persist Security Info=True";
-            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + path + "\\BazaDeDate.accdb;Persist Security Info=True";
+            executable = executable.Replace("\\bin\\Debug\\Test2_conexiune.exe", "\\Resurse\\BazaDeDate.accdb");
+            string connection = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source = " + executable + ";Persist Security Info=True";
 
             OleDbConnection con = new OleDbConnection(connection);
             con.Open();
