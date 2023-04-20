@@ -439,7 +439,6 @@ namespace Test2_conexiune
                     cmd1.Connection = con;
 
 
-                    MessageBox.Show(cmd1.CommandText);
                     mod.UpdateCommand = cmd1;
                     mod.UpdateCommand.ExecuteNonQuery();
                     MessageBox.Show("Modificare reusita!");
